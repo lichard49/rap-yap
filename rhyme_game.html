@@ -33,7 +33,19 @@
               </div>
               <div class="card-action">
                 <i id='mic-icon' class="material-icons dp48">mic</i>
-                <p style='display: none;' id='answer-sentence'><b id='answer-box'></b> is <i id='correct'>correct</i><i id='incorrect'>incorrect</i>.</p>
+
+                <div id='correct-sentence' style='display: none;'>
+                  <p>Correct!</p>
+                  <p>
+                    <b id='correct-answer'></b> does rhyme with <span id='correct-prompt'></span>.
+                  </p>
+                </div>
+                <div id='incorrect-sentence' style='display: none;'>
+                  <p>Incorrect.</p>
+                  <p>
+                    <b id='incorrect-answer'></b> does not rhyme with <span id='incorrect-prompt'></span>.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -51,13 +63,23 @@
     recognition.onresult = function (e) {
       var word = event.results[0][0].transcript;
       console.log(word);
-      $('#answer-box').html(word);
-      $('#correct').css('display', 'none');
-      $('#mic-icon').css('display', 'none');
-      $('#answer-sentence').css('display', 'block');
+      isRhyme('hello', word);
       console.log('done');
     }
  
+    function updateAnswer(prompt, answer, isCorrect) {
+      $('#mic-icon').css('display', 'none');
+      if(isCorrect) {
+        $('#correct-sentence').css('display', 'block');
+        $('#correct-answer').html(answer);
+        $('#correct-prompt').html(prompt);
+      } else {
+        $('#incorrect-sentence').css('display', 'block');
+        $('#incorrect-answer').html(answer);
+        $('#incorrect-prompt').html(prompt);
+      }
+    }
+
     function isRhyme(query1, query2) {
       var rhymeApi = 'http://rhymebrain.com/talk?function=getWordInfo&word=';
       var word1;
@@ -79,6 +101,7 @@
           }
           match--;
           console.log(query1 + ' and ' + query2 + ' have ' + match + ' syllables matching!');
+          updateAnswer(query1, query2, match > 1);
         }
       }
 
@@ -91,11 +114,9 @@
         checkMatch();
       });
     }
-    isRhyme('dangerous', 'synchronus');
-    isRhyme('hot', 'red');
 
     // start listening
-    // recognition.start();
+    recognition.start();
     console.log('go');
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
