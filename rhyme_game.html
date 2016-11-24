@@ -32,13 +32,34 @@
                 <h1>Hello</h1>
               </div>
               <div class="card-action">
-                <i class="material-icons dp48">mic</i>
+                <i id='mic-icon' class="material-icons dp48">mic</i>
+                <p style='display: none;' id='answer-sentence'><b id='answer-box'></b> is <i id='correct'>correct</i><i id='incorrect'>incorrect</i>.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <script type="text/javascript">
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+ 
+    recognition.onresult = function (e) {
+      var word = event.results[0][0].transcript;
+      console.log(word);
+      $('#answer-box').html(word);
+      $('#correct').css('display', 'none');
+      $('#mic-icon').css('display', 'none');
+      $('#answer-sentence').css('display', 'block');
+      console.log('done');
+    }
+ 
+    // start listening
+    recognition.start();
+    console.log('go');
+    </script>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
