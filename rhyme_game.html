@@ -90,6 +90,7 @@
  
     var numberCorrect = 0;
     var totalAnswered = 0;
+    var currentPrompt;
 
     function updatePrompt(prompt) {
       $('#prompt').html(prompt);
@@ -210,7 +211,8 @@
         '&api_key=' + key,
         function(data, status) {
           console.log(data['word']);
-          playRound(data['word']);
+          currentPrompt = data['word'];
+          playRound(currentPrompt);
         }
       );
     }
@@ -220,6 +222,10 @@
     $('.next-word').click(function(e) {
       startRandomWord();
     });
+
+    $('#mic-icon').click(function(e) {
+      playRound(currentPrompt);
+    })
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
