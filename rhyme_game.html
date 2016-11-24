@@ -29,7 +29,7 @@
             <div class="card-stacked">
               <div class="card-content">
                 <p>Say a word that rhymes with:</p>
-                <h1>Hello</h1>
+                <h1 id='prompt'></h1>
               </div>
               <div class="card-action">
                 <i id='mic-icon' class="material-icons dp48">mic</i>
@@ -39,12 +39,14 @@
                   <p>
                     <b id='correct-answer'></b> does rhyme with <span id='correct-prompt'></span>.
                   </p>
+                  <a class="next-word waves-effect waves-light btn right">Next word</a>
                 </div>
                 <div id='incorrect-sentence' style='display: none;'>
                   <p>Incorrect.</p>
                   <p>
                     <b id='incorrect-answer'></b> does not rhyme with <span id='incorrect-prompt'></span>.
                   </p>
+                  <a class="next-word waves-effect waves-light btn right">Next word</a>
                 </div>
               </div>
             </div>
@@ -53,20 +55,13 @@
       </div>
     </div>
 
-
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript">
-    var recognition = new webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
  
-    recognition.onresult = function (e) {
-      var word = event.results[0][0].transcript;
-      console.log(word);
-      isRhyme('hello', word);
-      console.log('done');
+    function updatePrompt(prompt) {
+      $('#prompt').html(prompt);
     }
- 
+
     function updateAnswer(prompt, answer, isCorrect) {
       $('#mic-icon').css('display', 'none');
       if(isCorrect) {
@@ -78,6 +73,12 @@
         $('#incorrect-answer').html(answer);
         $('#incorrect-prompt').html(prompt);
       }
+    }
+
+    function clearAnswer() {
+      $('#mic-icon').css('display', 'block');
+      $('#correct-sentence').css('display', 'none');
+      $('#incorrect-sentence').css('display', 'none');
     }
 
     function isRhyme(query1, query2) {
@@ -115,9 +116,49 @@
       });
     }
 
-    // start listening
-    recognition.start();
-    console.log('go');
+    function playRound(prompt) {
+      updatePrompt(prompt);
+      clearAnswer();
+
+      var recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+   
+      recognition.onresult = function(e) {
+        var word = event.results[0][0].transcript;
+        console.log(word);
+        isRhyme(prompt, word);
+        console.log('done');
+      }
+
+      // start listening
+      recognition.start();
+      console.log('go');
+    }
+
+    function startRandomWord() {
+      var api = 'http://api.wordnik.com/v4/words.json/randomWord?';
+      var key = 'a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5';
+      var corpus = 8000;
+      var def = true;
+      $.get(
+        api + 
+        'hasDictionaryDef=' + def +
+        '&minCorpusCount=' + corpus + 
+        '&api_key=' + key,
+        function(data, status) {
+          console.log(data['word']);
+          playRound(data['word']);
+        }
+      );
+    }
+
+    startRandomWord();
+
+    $('.next-word').click(function(e) {
+      startRandomWord();
+    });
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   </body>
