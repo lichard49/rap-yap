@@ -7,23 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Spit This</a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="#">Profile</a></li>
-        </ul>
 
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="#">Navbar Link</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
+    <div class="row">
+      <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Spit This</a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="#">Profile</a></li>
+          </ul>
+
+          <ul id="nav-mobile" class="side-nav">
+            <li><a href="#">Navbar Link</a></li>
+          </ul>
+          <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+      </nav>
+    </div>
 
     <div class="container">
       <div class="row">
+        <nav>
+          <div class="nav-wrapper">
+            <div class="col s12">
+              <a href="#!" class="breadcrumb">Home</a>
+              <a href="#!" class="breadcrumb">Games</a>
+              <a href="#!" class="breadcrumb">Rhyme Game</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="row">
         <div class="col s12 m7">
-          <h2 class="header">Rhyme Game</h2>
 
           <div class="card horizontal center-align">
             <div class="card-stacked">
@@ -124,6 +138,24 @@
       recognition.continuous = false;
       recognition.interimResults = false;
    
+      recognition.onsoundstart = function(e) {
+        console.log('sound start');
+      }
+      recognition.onsoundend = function(e) {
+        console.log('sound end');
+      }
+      recognition.onspeechstart = function(e) {
+        console.log('speech start');
+      }
+      recognition.onspeechend = function(e) {
+        console.log('speech end');
+      }
+      recognition.onerror = function(e) {
+        console.log('error :(');
+      }
+      recognition.onnomatch = function(e) {
+        console.log('no match...');
+      }
       recognition.onresult = function(e) {
         var word = event.results[0][0].transcript;
         console.log(word);
