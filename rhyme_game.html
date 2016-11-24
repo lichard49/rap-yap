@@ -41,6 +41,8 @@
       </div>
     </div>
 
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript">
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = false;
@@ -56,12 +58,46 @@
       console.log('done');
     }
  
+    function isRhyme(query1, query2) {
+      var rhymeApi = 'http://rhymebrain.com/talk?function=getWordInfo&word=';
+      var word1;
+      var word2;
+
+      function checkMatch() {
+        if(word1 && word2) {
+          var match = 0;
+          var ipa1 = word1.ipa.trim();
+          var ipa2 = word2.ipa.trim();
+          var length1 = ipa1.length;
+          var length2 = ipa2.length;
+          for(var i = 0; i < Math.min(length1, length2); i++) {
+            if(ipa1[length1-i] == ipa2[length2-i]) {
+              match++;
+            } else {
+              break;
+            }
+          }
+          match--;
+          console.log(query1 + ' and ' + query2 + ' have ' + match + ' syllables matching!');
+        }
+      }
+
+      $.get(rhymeApi + query1, function(data, status) {
+        word1 = data;
+        checkMatch();
+      });
+      $.get(rhymeApi + query2, function(data, status) {
+        word2 = data;
+        checkMatch();
+      });
+    }
+    isRhyme('dangerous', 'synchronus');
+    isRhyme('hot', 'red');
+
     // start listening
-    recognition.start();
+    // recognition.start();
     console.log('go');
     </script>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   </body>
 </html>
