@@ -2,7 +2,7 @@
   <head>
     <!-- Materialize library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -128,7 +128,7 @@
     }
 
     function isRhyme(query1, query2) {
-      var rhymeApi = 'http://rhymebrain.com/talk?function=getWordInfo&word=';
+      var rhymeApi = 'https://rhymebrain.com/talk?function=getWordInfo&word=';
       var word1;
       var word2;
 
@@ -202,7 +202,7 @@
     }
 
     function startRandomWord() {
-      var api = 'http://api.wordnik.com/v4/words.json/randomWord?';
+      var api = 'https://api.wordnik.com/v4/words.json/randomWord?';
       var key = 'a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5';
       var corpus = 8000;
       var def = true;
