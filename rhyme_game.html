@@ -161,6 +161,8 @@
         word2 = data;
         checkMatch();
       }, 'jsonp');
+
+      console.log(rhymeBrainResponse);
     }
 
     function playRound(prompt) {
@@ -231,5 +233,7 @@
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
+    <script type="text/javascript" src="https://rhymebrain.com/talk?function=getWordInfo&jsonp=rhymeBrainResponse&word=bob"></script>
   </body>
 </html>
