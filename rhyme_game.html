@@ -156,11 +156,11 @@
       $.get(rhymeApi + query1, function(data, status) {
         word1 = data;
         checkMatch();
-      });
+      }, 'jsonp');
       $.get(rhymeApi + query2, function(data, status) {
         word2 = data;
         checkMatch();
-      });
+      }, 'jsonp');
     }
 
     function playRound(prompt) {
