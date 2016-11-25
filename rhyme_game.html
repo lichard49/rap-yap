@@ -101,10 +101,12 @@
     function updateAnswer(prompt, answer, isCorrect) {
       $('#mic-icon').css('display', 'none');
       if(isCorrect) {
+        console.log('correct!');
         $('#correct-sentence').css('display', 'block');
         $('#correct-answer').html(answer);
         $('#correct-prompt').html(prompt);
       } else {
+        console.log('incorrect :(');
         $('#incorrect-sentence').css('display', 'block');
         $('#incorrect-answer').html(answer);
         $('#incorrect-prompt').html(prompt);
@@ -127,42 +129,64 @@
       $('#incorrect-sentence').css('display', 'none');
     }
 
-    function isRhyme(query1, query2) {
-      var rhymeApi = 'https://rhymebrain.com/talk?function=getWordInfo&word=';
-      var word1;
-      var word2;
-
-      function checkMatch() {
-        if(word1 && word2) {
-          var match = 0;
-          var ipa1 = word1.ipa.trim();
-          var ipa2 = word2.ipa.trim();
-          var length1 = ipa1.length;
-          var length2 = ipa2.length;
-          for(var i = 0; i < Math.min(length1, length2); i++) {
-            if(ipa1[length1-i] == ipa2[length2-i]) {
-              match++;
-            } else {
-              break;
-            }
+    var word1;
+    var word2;
+    function checkMatch() {
+      console.log('checking!');
+      if(word1 && word2) {
+        var match = 0;
+        var ipa1 = word1.ipa.trim();
+        var ipa2 = word2.ipa.trim();
+        var length1 = ipa1.length;
+        var length2 = ipa2.length;
+        for(var i = 0; i < Math.min(length1, length2); i++) {
+          if(ipa1[length1-i] == ipa2[length2-i]) {
+            match++;
+          } else {
+            break;
           }
-          match--;
-          console.log(query1 + ' and ' + query2 + ' have ' + match + ' syllables matching!');
-          updateAnswer(query1, query2, match > 1);
-          updateScore(match > 1);
         }
+        match--; // empty character
+        console.log(word1['word'] + ' and ' + word2['word'] + ' have ' + match + ' syllables matching!');
+        isMatch = match > 0;
+        updateAnswer(word1['word'], word2['word'], isMatch);
+        updateScore(isMatch);
+
+        word1 = null;
+        word2 = null;
       }
+    }
 
-      $.get(rhymeApi + query1, function(data, status) {
-        word1 = data;
-        checkMatch();
-      }, 'jsonp');
-      $.get(rhymeApi + query2, function(data, status) {
-        word2 = data;
-        checkMatch();
-      }, 'jsonp');
+    function isRhyme(query1, query2) {
+      var rhymeApi = 'http://rhymebrain.com/talk?function=getWordInfo';
 
-      console.log(rhymeBrainResponse);
+      var script1 = document.createElement('script');
+      script1.id = 'script1';
+      script1.type = 'text/javascript';
+      script1.src = rhymeApi + '&word=' + query1 + '&jsonp=rhymeBrainResponse1';
+      document.body.appendChild(script1);
+
+      var script2 = document.createElement('script');
+      script2.id = 'script2'
+      script2.type = 'text/javascript';
+      script2.src = rhymeApi + '&word=' + query2 + '&jsonp=rhymeBrainResponse2';
+      document.body.appendChild(script2);
+
+      console.log("added everything");
+    }
+
+    function rhymeBrainResponse1(data) {
+      word1 = data;
+      console.log(word1);
+      document.body.removeChild(document.getElementById('script1'));
+      checkMatch();
+    }
+
+    function rhymeBrainResponse2(data) {
+      word2 = data;
+      console.log(word2);
+      document.body.removeChild(document.getElementById('script2'));
+      checkMatch();
     }
 
     function playRound(prompt) {
@@ -231,13 +255,7 @@
       playRound(currentPrompt);
     })
 
-    function rhymeBrainResponse(data) {
-      console.log("data!!!" + data);
-    }
-
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-
-    <script type="text/javascript" src="http://rhymebrain.com/talk?function=getWordInfo&jsonp=rhymeBrainResponse&word=bob"></script>
   </body>
 </html>
