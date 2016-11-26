@@ -131,6 +131,8 @@
 
     function isRhyme(query1, query2) {
       var api = 'https://watson-api-explorer.mybluemix.net/text-to-speech/api/v1/pronunciation?voice=en-US_MichaelVoice&format=ipa&text=';
+      var authHeader = 'Authorization';
+      var authContent = 'Basic ' + btoa('60b16d7f-8d2d-48bb-b346-a120595e0f7f:c6WD7zOJGXD1');
 
       var word1;
       var word2;
@@ -160,22 +162,27 @@
         }
       }
 
-      $.get(
-        api + query1,
-        function(data, status) {
-          word1 = data;
-          console.log(data);
-          checkMatch();
+      $.ajax({
+        url: api + query1,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader (authHeader, authContent);
         }
-      );
-      $.get(
-        api + query2,
-        function(data, status) {
-          word2 = data;
-          console.log(data);
-          checkMatch();
+      }).done(function(data) {
+        word1 = data;
+        console.log(data);
+        checkMatch();
+      });
+
+      $.ajax({
+        url: api + query2,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader (authHeader, authContent);
         }
-      );
+      }).done(function(data) {
+        word2 = data;
+        console.log(data);
+        checkMatch();
+      });
     }
 
     function playRound(prompt) {
