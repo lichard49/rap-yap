@@ -139,50 +139,74 @@
       function checkMatch() {
         console.log('checking!');
         if(word1 && word2) {
-          var match = 0;
-          var ipa1 = word1.pronunciation.trim();
-          var ipa2 = word2.pronunciation.trim();
-          var length1 = ipa1.length;
-          var length2 = ipa2.length;
-          for(var i = 0; i < Math.min(length1, length2); i++) {
-            if(ipa1[length1-i] == ipa2[length2-i]) {
-              match++;
-            } else {
+          var matchAttempted = false;
+          for(var key in word1) {
+            if(word2[key]) {
+              var match = 0;
+              var ipa1 = word1[key];
+              var ipa2 = word2[key];
+              ipa1 = ipa1.replace(/ˌ/g, '').replace(/ˈ/g, '');
+              ipa2 = ipa2.replace(/ˌ/g, '').replace(/ˈ/g, '');
+              var length1 = ipa1.length;
+              var length2 = ipa2.length;
+              for(var i = 0; i < Math.min(length1, length2); i++) {
+                console.log(ipa1[length1-i] + '==' + ipa2[length2-i]);
+                if(ipa1[length1-i] == ipa2[length2-i]) {
+                  match++;
+                } else {
+                  break;
+                }
+              }
+              match-=2; // empty character
+              console.log(query1 + ' and ' + query2 + ' have ' + match + ' syllables matching!');
+              isMatch = match > 0;
+              updateAnswer(query1, query2, isMatch);
+              updateScore(isMatch);
+              matchAttempted = true;
               break;
             }
           }
-          match--; // empty character
-          console.log(query1 + ' and ' + query2 + ' have ' + match + ' syllables matching!');
-          isMatch = match > 0;
-          updateAnswer(query1, query2, isMatch);
-          updateScore(isMatch);
-
-          word1 = null;
-          word2 = null;
+          if(!matchAttempted) {
+            alert('Our system had some problems :( Let\'s start you off with a new word');
+            startRandomWord();
+          }
         }
       }
 
-      $.ajax({
-        url: api + query1,
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader (authHeader, authContent);
+      var api = 'https://api.wordnik.com/v4/word.json/';
+      var apiFunction = '/pronunciations?';
+      var key = 'a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5';
+      
+      $.get(
+        api + query1 + apiFunction +
+        'useCanonical=false' +
+        '&api_key=' + key,
+        function(data, status) {
+          console.log(data);
+          word1 = {};
+          for(var i = 0; i < data.length; i++) {
+            word1[data[i]['rawType']] = data[i]['raw'];
+          }
+          console.log(word1);
+          checkMatch();
         }
-      }).done(function(data) {
-        word1 = data;
-        console.log(data);
-        checkMatch();
-      });
+      );
 
-      $.ajax({
-        url: api + query2,
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader (authHeader, authContent);
+
+      $.get(
+        api + query2 + apiFunction +
+        'useCanonical=false' +
+        '&api_key=' + key,
+        function(data, status) {
+          console.log(data);
+          word2 = {};
+          for(var i = 0; i < data.length; i++) {
+            word2[data[i]['rawType']] = data[i]['raw'];
+          }
+          console.log(word2);
+          checkMatch();
         }
-      }).done(function(data) {
-        word2 = data;
-        console.log(data);
-        checkMatch();
-      });
+      );
     }
 
     function playRound(prompt) {
@@ -232,7 +256,8 @@
         api + 
         'hasDictionaryDef=' + def +
         '&minCorpusCount=' + corpus + 
-        '&api_key=' + key,
+        '&api_key=' + key +
+        '&excludePartOfSpeech=family-name,given-name,proper-noun,proper-noun-plural,proper-noun-posessive,affix',
         function(data, status) {
           console.log(data['word']);
           currentPrompt = data['word'];
