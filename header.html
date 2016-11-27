@@ -22,10 +22,12 @@
     linkMap = { 'home': 'index.html',
                'games': 'games.html',
                 'rhyme-game': 'rhyme_game.html' };
-    reverseLinkMap = { 'index.html': 'home',
+    reverseLinkMap = { '': 'home',
+               'index.html': 'home',
                'games.html': 'games',
                 'rhyme_game.html': 'rhyme-game' };
-    
+
+    console.log('hi' + getFilename());
     currentPage = reverseLinkMap[getFilename()];
     breadcrumbs = pathMap[currentPage].split(',');
     for(var i = 0; i < breadcrumbs.length; i++) {
