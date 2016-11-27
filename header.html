@@ -13,9 +13,9 @@
       return url;
     }
 
-    pathMap = { 'home': 'home',
-                'games': 'home,games',
-                'rhyme-game': 'home,games,rhyme-game'};
+    pathMap = { 'home': '',
+                'games': 'games',
+                'rhyme-game': 'games,rhyme-game'};
     nameMap = { 'home': 'Home',
                 'games': 'Games',
                 'rhyme-game': 'Rhyme Game' };
@@ -27,13 +27,13 @@
                'games.html': 'games',
                 'rhyme_game.html': 'rhyme-game' };
 
-    console.log('hi' + getFilename());
     currentPage = reverseLinkMap[getFilename()];
-    breadcrumbs = pathMap[currentPage].split(',');
-    for(var i = 0; i < breadcrumbs.length; i++) {
-      $('#nav').append('<a href="' + linkMap[breadcrumbs[i]] + '" class="breadcrumb">' + nameMap[breadcrumbs[i]] + '</a>');
+    if(pathMap[currentPage]) {
+      breadcrumbs = pathMap[currentPage].split(',');    
+      for(var i = 0; i < breadcrumbs.length; i++) {
+        $('#nav').append('<a href="' + linkMap[breadcrumbs[i]] + '" class="breadcrumb">' + nameMap[breadcrumbs[i]] + '</a>');
+      }
     }
-
 
     </script>
     
@@ -63,6 +63,7 @@
         <nav>
           <div class="nav-wrapper">
             <div id='nav' class="col s12">
+              <a href="index.html" class="breadcrumb">Home</a>
             </div>
           </div>
         </nav>
