@@ -16,7 +16,10 @@
             <h1 id='prompt'></h1>
           </div>
           <div class="card-action">
-            <i id='mic-icon' class="material-icons dp48">mic</i>
+            <span id='mic-icon'>
+              <i class="material-icons dp48">mic</i>
+              <div id='mic-status'></div>
+            </span>
 
             <div id='correct-sentence' style='display: none;'>
               <p>Correct!</p>
@@ -180,26 +183,38 @@ function playRound(prompt) {
   var recognition = new webkitSpeechRecognition();
   recognition.continuous = false;
   recognition.interimResults = false;
+  timeout = null;
 
   recognition.onsoundstart = function(e) {
     console.log('sound start');
+    $('#mic-status').html('I\'m listening...');
   }
   recognition.onsoundend = function(e) {
     console.log('sound end');
+    $('#mic-status').html('Calculating...');
+    timeout = setTimeout(function() {
+      $('#mic-status').html('Didn\'t get that -- click to try again!');
+    }, 1000);
   }
   recognition.onspeechstart = function(e) {
     console.log('speech start');
+    $('#mic-status').html('I\'m listening...');
   }
   recognition.onspeechend = function(e) {
     console.log('speech end');
+    $('#mic-status').html('Calculating...');
   }
   recognition.onerror = function(e) {
     console.log('error :(');
+    $('#mic-status').html('Didn\'t get that -- click to try again!');
   }
   recognition.onnomatch = function(e) {
     console.log('no match...');
   }
   recognition.onresult = function(e) {
+    if(timeout) {
+      clearTimeout(timeout);
+    }
     var word = event.results[0][0].transcript;
     console.log(word);
     isRhyme(prompt, word);
@@ -207,6 +222,7 @@ function playRound(prompt) {
   }
 
   // start listening
+  $('#mic-status').html('Ready -- speak now!');
   recognition.start();
   console.log('go');
 }
