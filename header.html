@@ -4,7 +4,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script type="text/javascript">
+    var _GET = (function() {
+      var _get = {};
+      var re = /[?&]([^=&]+)(=?)([^&]*)/g;
+      while (m = re.exec(location.search))
+        _get[decodeURIComponent(m[1])] = (m[2] == '=' ? decodeURIComponent(m[3]) : true);
+      return _get;
+    })();
 
+    nameMap = { 'home': 'Home',
+                'games': 'Games',
+                'rhyme-game': 'Rhyme Game' };
+    linkMap = { 'home': 'index.html',
+               'games': 'games.html',
+                'rhyme-game': 'rhyme_game.html' };
+    if(_GET['path']) {
+      breadcrumbs = _GET['path'].split(',');
+    } else {
+      breadcrumbs = ['home'];
+    }
+    for(var i = 0; i < breadcrumbs.length; i++) {
+      $('#nav').append('<a href="' + linkMap[breadcrumbs[i]] + '" class="breadcrumb">' + nameMap[breadcrumbs[i]] + '</a>');
+    }
+    console.log();
+    </script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <title>Rap Yap</title>
@@ -30,10 +55,7 @@
       <div class="row">
         <nav>
           <div class="nav-wrapper">
-            <div class="col s12">
-              <a href="#!" class="breadcrumb">Home</a>
-              <a href="#!" class="breadcrumb">Games</a>
-              <a href="#!" class="breadcrumb">Rhyme Game</a>
+            <div id='nav' class="col s12">
             </div>
           </div>
         </nav>
